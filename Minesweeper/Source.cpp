@@ -1,13 +1,20 @@
 #include <iostream>
 #include <vector>
+#include <Windows.h>
 using namespace std;
+enum {
+	MINE,
+	BLANK,
+	CORRECT_FLAG,
+	INCORRECT_FLAG
+};
 struct gameplate {
 	int xsize;
 	int ysize;
 	int mineNum;
 	vector<vector<int>> mapData;
 };
-void output(vector<vector<int>> mapData);
+void output(vector<vector<int>>&mapData);
 int main() {
 	//Set Game
 	gameplate plate;
@@ -27,7 +34,8 @@ int main() {
 	output(plate.mapData);
 }
 
-void output(vector<vector<int>> mapData) {
+void output(vector<vector<int>>&mapData) {
+	system("cls");
 	for (int i = 0; i < mapData.size(); i++) {
 		for (int j = 0; j < mapData[i].size(); j++) {
 			cout << mapData[i][j];
