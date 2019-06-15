@@ -20,17 +20,17 @@ int main() {
 	//Set Game
 	gameplate plate;
 	do {
-		cout << "ÆÇÀÇ °¡·Î ±æÀÌ:";
+		cout << "íŒì˜ ê°€ë¡œ ê¸¸ì´:";
 		cin >> plate.xsize;
 	} while (plate.xsize < 1);
 	do {
-		cout << "ÆÇÀÇ ¼¼·Î ±æÀÌ:";
+		cout << "íŒì˜ ì„¸ë¡œ ê¸¸ì´:";
 		cin >> plate.ysize;
 	} while (plate.ysize < 1);
 	plate.mineData = vector<vector<int>>(plate.ysize, vector<int>(plate.xsize,BLANK));
 	plate.outputData = vector<vector<int>>(plate.ysize, vector<int>(plate.xsize, 0));
 	do {
-		cout << "Áö·ÚÀÇ °³¼ö (1 ¹Ì¸¸ÀÇ °ª ÀÔ·Â ½Ã ÀÚµ¿):";
+		cout << "ì§€ë¢°ì˜ ê°œìˆ˜ (1 ë¯¸ë§Œì˜ ê°’ ìž…ë ¥ ì‹œ ìžë™):";
 		cin >> plate.mineNum;
 	} while (plate.mineNum > plate.xsize * plate.ysize);
 	if (plate.mineNum < 1) {
@@ -64,4 +64,30 @@ void output(vector<vector<int>>&mineData) {
 		}
 		cout<<endl;
 	}
+}
+
+void reveal(vector<vector<int>>&mineData, vector<vector<int>> &outputData, pair<int,int> coord){
+if(mineData[coord.second][coord.first]==MINE){
+gameover(false);
+}
+int count=0;
+for(int y=coord.second-1;y<=coord.second+1;y++){
+for(int x=coord.first-1;x<=coord.first+1;x++){
+if(x==coord.first&&y==coord.second)continue;
+if(mineData[y][x]==MINE)count++;
+}
+}
+if(count==0){
+for(int y=coord.second-1;y<=coord.second+1;y++){
+for(int x=coord.first-1;x<=coord.first+1;x++){
+if(x==coord.first&&y==coord.second)continue;
+reveal(mineData,outputData,make_pair(x,y);
+}
+}
+}
+outputData[coord.second][coord.first]=count;
+}
+
+void gameover(bool win){
+//TODO impl
 }
