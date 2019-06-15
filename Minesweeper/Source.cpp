@@ -28,7 +28,7 @@ int main() {
 		cin >> plate.ysize;
 	} while (plate.ysize < 1);
 	plate.mineData = vector<vector<int>>(plate.ysize, vector<int>(plate.xsize,BLANK));
-	plate.outputData = vector<vector<int>>(plate.ysize, vector<int>(plate.xsize, 0));
+	plate.outputData = vector<vector<int>>(plate.ysize, vector<int>(plate.xsize, -1));
 	do {
 		cout << "지뢰의 개수 (1 미만의 값 입력 시 자동):";
 		cin >> plate.mineNum;
@@ -53,14 +53,16 @@ int main() {
 	} while (mineCount < plate.mineNum);
 
 	
-	output(plate.mineData);
+	output(plate.outputData);
 }
 
-void output(vector<vector<int>>&mineData) {
+void output(vector<vector<int>>&outputData) {
+char_w arr[]="○①②③④⑤⑥⑦⑧●◐Ⓧ";
 	system("cls");
-	for (int i = 0; i < mineData.size(); i++) {
-		for (int j = 0; j < mineData[i].size(); j++) {
-			int dat = mineData[i][j];
+	for (int i = 0; i < outputData.size(); i++) {
+		for (int j = 0; j < outputData[i].size(); j++) {
+			int dat = outputData[i][j];
+cout<<arr[dat];
 		}
 		cout<<endl;
 	}
