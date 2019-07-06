@@ -18,9 +18,9 @@ struct gameplate {
 	int flagNum;
 };
 
-void gameover(bool);
+void gameover(vector<vector<int>>&, vector<vector<int>>&, bool);
 bool reveal(vector<vector<int>>&, vector<vector<int>>&, pair<int, int>);
-void output(vector<vector<int>>&, vector<vector<int>>&);
+void output(vector<vector<int>>&, vector<vector<int>>&, bool v = false);
 int getNearbyFlag(vector<vector<int>>&, pair<int, int>);
 bool revealNearby(vector<vector<int>>&, vector<vector<int>>&, pair<int, int>);
 int main() {
@@ -45,10 +45,16 @@ int main() {
 	if (plate.mineNum < 1) {
 		plate.mineNum = plate.xsize * plate.ysize / 2;
 	}
+
 	plate.flagNum = 0;
 	output(plate.outputData, plate.mineData);
+	if (plate.mineNum > plate.xsize * plate.ysize - 9) {
+		wcout << L"지뢰의 개수가 너무 많아 " << plate.xsize * plate.ysize - 9 << L"개로 지정되었습니다.\n";
+		plate.mineNum = plate.xsize * plate.ysize - 9;
+	}
 	int turn = 0;
 	bool isFirstOpen = true;
+	bool gameOvered = false;
 	while (true) {
 
 		wchar_t mode = L'가';
@@ -80,7 +86,7 @@ int main() {
 					do {
 						int x = randX(mersenne);
 						int y = randY(mersenne);
-						if (plate.mineData[y][x] != MINE && sqrt(pow((double)x - (double)(ix + 1), 2) + pow((double)y - (double)(iy + 1), 1)) > sqrt(2)) {
+						if (plate.mineData[y][x] != MINE && sqrt(pow((double)x - (double)ix, 2) + pow((double)y - (double)iy, 2)) > sqrt(2)) {
 							mineCount++;
 							plate.mineData[y][x] = MINE;
 						}
@@ -88,10 +94,16 @@ int main() {
 					isFirstOpen = false;
 				}
 				if (plate.outputData[iy][ix] == getNearbyFlag(plate.outputData, make_pair(ix, iy))) {
-					gameover(!revealNearby(plate.mineData, plate.outputData, make_pair(ix, iy)));
+					if (revealNearby(plate.mineData, plate.outputData, make_pair(ix, iy))) {
+						gameOvered = true;
+						gameover(plate.outputData, plate.mineData, false);
+					}
 				}
 				else {
-					gameover(!reveal(plate.mineData, plate.outputData, make_pair(ix, iy)));
+					if (reveal(plate.mineData, plate.outputData, make_pair(ix, iy))) {
+						gameOvered = true;
+						gameover(plate.outputData, plate.mineData, false);
+					}
 				}
 				turn++;
 				break;
@@ -116,6 +128,7 @@ int main() {
 			}
 
 		}
+		if (gameOvered)break;
 		output(plate.outputData, plate.mineData);
 
 	}
@@ -123,10 +136,10 @@ int main() {
 
 
 
-	output(plate.outputData, plate.mineData);
+	//output(plate.outputData, plate.mineData);
 }
 
-void output(vector<vector<int>>& outputData, vector<vector<int>>& mineData) {
+void output(vector<vector<int>>& outputData, vector<vector<int>>& mineData, bool showMines) {
 	const wchar_t arr[] = L"○①②③④⑤⑥⑦⑧";
 	const wchar_t arr2[] = L"１２３４５６７８９";
 	system("cls");
@@ -144,6 +157,7 @@ void output(vector<vector<int>>& outputData, vector<vector<int>>& mineData) {
 		for (int j = 0; j < outputData[i].size(); j++) {
 
 			int dat = outputData[i][j];
+
 			if (dat == -1) {
 				wcout << L"ㅁ";
 			}
@@ -153,6 +167,10 @@ void output(vector<vector<int>>& outputData, vector<vector<int>>& mineData) {
 			else {
 				wcout << arr[dat];
 			}
+			if (mineData[i][j] == MINE) {
+				if (showMines)wcout << L"\b\b뢰";
+			}
+
 		}
 		cout << endl;
 	}
@@ -208,8 +226,11 @@ int getNearbyFlag(vector<vector<int>>& outputData, pair<int, int> coord) {
 	}
 	return count;
 }
-void gameover(bool win) {
+void gameover(vector<vector<int>>& outputData, vector<vector<int>>& mineData, bool win) {
 	//TODO impl
-	if (!win)
+	if (!win) {
+		output(outputData, mineData, true);
 		wcout << L"게임 오버";
+
+	}
 }
